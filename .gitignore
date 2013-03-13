@@ -1,0 +1,6 @@
+# python
+*.pyc
+ui*py
+
+# editors
+*swp
