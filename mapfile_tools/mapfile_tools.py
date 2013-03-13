@@ -28,6 +28,7 @@ import resources_rc
 
 from mapfile_layer import MapfileLayer
 from mapfile_plugin_layer_type import MapfilePluginLayerType
+from dock_editor import DockEditor
 from message_window import MessageWindow
 
 class MapfileTools:
@@ -39,9 +40,9 @@ class MapfileTools:
 
   def initGui(self):
     # Create action that will start plugin configuration
-    self.actionLayer = QAction(QIcon(":/plugins/mapfile_tools/icon.png"), "Mapfile Layer", self.iface.mainWindow())
-    # connect the action to the run method
-    QObject.connect(self.actionLayer, SIGNAL("triggered()"), self.addLayer)
+    self.actionLayer = QAction(QIcon(":/plugins/mapfile_tools/icon.png"), "Display dock", self.iface.mainWindow())
+    # Action activate plugin dock editor
+    QObject.connect(self.actionLayer, SIGNAL("triggered()"), self.showEditor)
 
     # Add toolbar button and menu item
     self.iface.addToolBarIcon(self.actionLayer)
@@ -49,6 +50,9 @@ class MapfileTools:
 
     # Register plugin layer type
     QgsPluginLayerRegistry.instance().addPluginLayerType(MapfilePluginLayerType(self))
+    # create dock
+    self.dock_editor = DockEditor(self)
+    self.iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.dock_editor)
  
   def unload(self):
     # Remove the plugin menu item and icon
@@ -65,6 +69,10 @@ class MapfileTools:
                                                 self.dock_window )
     return self.dock_window.textEdit
 
+  def showEditor(self):
+    ## close dock
+    self.dock_editor.close()
+
   def addLayer(self):
     # add new mapfile layer
     mapfileLayer = MapfileLayer(self.messageTextEdit())
@@ -76,3 +84,5 @@ class MapfileTools:
         extents = mapfileLayer.maprenderer.getExtents()
         self.iface.mapCanvas().setExtent(QgsRectangle(extents[0], extents[1], extents[2], extents[3]))
         self.iface.mapCanvas().refresh()
+
+# vim: set filetype=python expandtab tabstop=2 shiftwidth=2 autoindent smartindent:

@@ -6,7 +6,7 @@ PY_FILES =
 
 EXTRAS =
 
-UI_FILES = ui_mapfile_layer.py ui_message_window.py
+UI_FILES = ui_mapfile_layer.py ui_message_window.py ui_dock_editor.py
 
 RESOURCE_FILES = resources_rc.py
 
