@@ -94,4 +94,9 @@ class MapfileTools:
       self.iface.mapCanvas().setExtent(QgsRectangle(extents[0], extents[1], extents[2], extents[3]))
       self.iface.mapCanvas().refresh()
 
+  def updateLayer(self, layerid, mapfile):
+    """Update QGIS layer to new mapfile."""
+    layer = QgsMapLayerRegistry.instance().mapLayer(layerid)
+    layer.loadMapfile(mapfile, ())
+
 # vim: set filetype=python expandtab tabstop=2 shiftwidth=2 autoindent smartindent:

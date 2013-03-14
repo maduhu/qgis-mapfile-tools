@@ -2,7 +2,7 @@
 X Open Mapfile template
 X Add Mapfile to Map
 * deal with multiple layers
-* Fill combobox with existing MS layers
+X Fill combobox with existing MS layers
 * Replace current Mapfile Layer
 * Insert code snippets
 * right-click on layer -> edit
@@ -20,4 +20,4 @@ X Add Mapfile to Map
 == Bugfixes
 * Scale problem with on the fly reprojection
 * Bug with "image" parameter
-
+* set title to given one not mapfile one
