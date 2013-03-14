@@ -51,7 +51,6 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         self.editor.load(self.parent.template_dir + "/default.map")
         # create temporary file
         fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
-        self.temp_file = open(self.temp_mapfile, 'w+')
         # write mapfile content to it
         self.update_file()
 
@@ -81,8 +80,8 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def update_file(self):
         """Update file on disk with editor's content."""
-        self.temp_file.write(self.editor.getText())
-        self.temp_file.flush()
+        with open(self.temp_mapfile, "w+") as f:
+            f.write(self.editor.getText())
 
     def update_ms_layer_list(self):
         """Update combo box with every ms layer available."""
