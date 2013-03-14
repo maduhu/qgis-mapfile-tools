@@ -57,7 +57,12 @@ class DockEditor(QDockWidget, Ui_DockEditor):
     def add_layer_pressed(self):
         """Add current Mapfile to layer."""
         self.update_file()
-        self.parent.addLayer(self.temp_mapfile)
+        name = ""
+        if self.msLayerList.currentText == '':
+            name = self.get_new_layer_name()
+        else:
+            name = self.msLayerList.currentText()
+        self.parent.addLayer(self.temp_mapfile, name = name)
 
     def replace_layer_pressed(self):
         """Replace selected layer with current mapfile."""
