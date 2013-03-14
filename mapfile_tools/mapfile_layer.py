@@ -35,7 +35,7 @@ class MapfileLayer(QgsPluginLayer):
 
   LAYER_TYPE="mapfile"
 
-  def __init__(self, messageTextEdit, mapfile = ""):
+  def __init__(self, messageTextEdit, mapfile = "", name = None):
     QgsPluginLayer.__init__(self, MapfileLayer.LAYER_TYPE, "Mapfile Tools plugin layer")
     self.setValid(True)
 
@@ -46,7 +46,7 @@ class MapfileLayer(QgsPluginLayer):
     self.pixmap = None
 
     if self.mapfile:
-      self.loadMapfile(mapfile, ())
+      self.loadMapfile(mapfile, (), name)
 
   def setupPaintArea(self, rendererContext):
     rasterScaleFactor = rendererContext.rasterScaleFactor()
@@ -146,7 +146,7 @@ class MapfileLayer(QgsPluginLayer):
     element.setAttribute("layers", str(self.layers))
     return True
 
-  def loadMapfile(self, mapfile, layers):
+  def loadMapfile(self, mapfile, layers = (), name = None):
     self.mapfile = mapfile
     self.layers = layers
     if self.mapfile == "":
@@ -157,7 +157,10 @@ class MapfileLayer(QgsPluginLayer):
     if self.maprenderer.getMapObj() == None:
       return False
 
-    self.setLayerName(self.maprenderer.getMapObj().name)
+    if name is None:
+        self.setLayerName(self.maprenderer.getMapObj().name)
+    else:
+        self.setLayerName(name)
 
     # get projection as EPSG
     crs = QgsCoordinateReferenceSystem()
