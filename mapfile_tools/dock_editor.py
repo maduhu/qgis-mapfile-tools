@@ -98,6 +98,9 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def ms_layer_list_remove(self, layer_list):
         """Remove layers to be deleted from combobox."""
+        # if current mapfile is in deleted layer list, clear the editor
+        if self.msLayerList.itemData(self.msLayerList.currentIndex()).toString() in layer_list:
+            self.editor.setText('')
         for layer_id in layer_list:
             self.msLayerList.removeItem(self.msLayerList.findData(layer_id))
 
