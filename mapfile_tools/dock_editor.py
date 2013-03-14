@@ -47,10 +47,11 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def create_new_pressed(self):
         """Create new Mapfile from default template."""
+        self.msLayerList.clearEditText()
         self.editor.load(self.parent.template_dir + "/default.map")
         # create temporary file
         fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
-        # write mapfile content to it
+        # write mapfile content to the temp file
         self.update_file()
 
     def add_layer_pressed(self):
