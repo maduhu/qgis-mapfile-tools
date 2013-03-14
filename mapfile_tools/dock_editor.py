@@ -15,7 +15,6 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         QDockWidget.__init__(self, parent.iface.mainWindow())
         # temporary file for mapfile
         # FIXME : should deal with multiple mapfiles
-        self.temp_file = None
         self.temp_mapfile = None
 
         # Set up the user interface from Designer. 
@@ -86,6 +85,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
     def update_ms_layer_list(self):
         """Update combo box with every ms layer available."""
         # the combobox should be updated on every layer list modification
+        self.msLayerList.clear()
         for layer in self.iface.mapCanvas().layers():
             if isinstance(layer, MapfileLayer):
                 self.msLayerList.addItem(layer.name(), layer.id())
