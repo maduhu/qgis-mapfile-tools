@@ -1,0 +1,42 @@
+MAP
+  NAME "postgis"
+#  SIZE 500 500
+  UNITS meters
+
+  EXTENT 490673.909842 6180187.856289 622852.190781 6314324.215627
+  PROJECTION
+	"init=epsg:2154"
+  END
+
+  IMAGETYPE PNG
+  OUTPUTFORMAT
+    NAME PNG
+    DRIVER 'GD/PNG'
+    MIMETYPE 'image/png'
+    EXTENSION 'png'
+  END
+
+  WEB
+    # WMS server settings
+    METADATA
+      'wms_title'           'default mapfile'
+      'wms_onlineresource'  'http://localhost/cgi-bin/mapserv?map=/home/user/default.map&'
+      'wms_srs'             'EPSG:2154'
+    END
+  END
+
+ LAYER
+  NAME "sample"
+  DATA gisdata/sample.shp
+  STATUS ON
+  TYPE POLYGON
+  PROJECTION
+	"init=epsg:2154"
+  END
+  CLASS
+    COLOR 200 0 0
+    OUTLINECOLOR 0 0 0
+  END
+ END
+
+END

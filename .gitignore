@@ -4,3 +4,6 @@ ui*py
 
 # editors
 *swp
+
+# test data
+mapfile_tools/templates/gisdata
