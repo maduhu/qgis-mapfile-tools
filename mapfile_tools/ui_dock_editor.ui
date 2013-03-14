@@ -11,11 +11,14 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>DockWidget</string>
+   <string>Mapfile Editor</string>
   </property>
   <widget class="QWidget" name="DockEditorContent">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
+    <item row="1" column="0" rowspan="7" colspan="2">
+     <widget class="QWidget" name="widget" native="true"/>
+    </item>
+    <item row="1" column="2">
      <widget class="QDialogButtonBox" name="fileBox">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -25,60 +28,71 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Templates</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QPushButton" name="template1">
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QPushButton" name="template2">
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QPushButton" name="template3">
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
-     <widget class="QPushButton" name="template4">
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
+    <item row="2" column="2">
      <widget class="Line" name="line_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
+    <item row="3" column="2">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Templates</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QPushButton" name="template1">
+      <property name="text">
+       <string>Vector Layer</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="2">
+     <widget class="QPushButton" name="template2">
+      <property name="text">
+       <string>PostGIS Layer</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="2">
+     <widget class="QPushButton" name="template3">
+      <property name="text">
+       <string>Raster Layer</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="2">
+     <widget class="QPushButton" name="template4">
+      <property name="text">
+       <string>Classify</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="msLayerList">
+      <property name="editable">
+       <bool>true</bool>
+      </property>
+      <property name="insertPolicy">
+       <enum>QComboBox::InsertAtTop</enum>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Current MS layer :</string>
       </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>401</width>
-        <height>20</height>
-       </size>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="createNewButton">
+      <property name="text">
+       <string>Create New</string>
       </property>
-     </spacer>
+     </widget>
     </item>
    </layout>
   </widget>

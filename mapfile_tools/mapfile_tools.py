@@ -40,9 +40,9 @@ class MapfileTools:
 
   def initGui(self):
     # Create action that will start plugin configuration
-    self.actionLayer = QAction(QIcon(":/plugins/mapfile_tools/icon.png"), "Display dock", self.iface.mainWindow())
+    self.actionLayer = QAction(QIcon(":/plugins/mapfile_tools/icon.png"), "Toggle dock", self.iface.mainWindow())
     # Action activate plugin dock editor
-    QObject.connect(self.actionLayer, SIGNAL("triggered()"), self.showEditor)
+    QObject.connect(self.actionLayer, SIGNAL("triggered()"), self.toggleEditor)
 
     # Add toolbar button and menu item
     self.iface.addToolBarIcon(self.actionLayer)
@@ -69,9 +69,11 @@ class MapfileTools:
                                                 self.dock_window )
     return self.dock_window.textEdit
 
-  def showEditor(self):
-    ## close dock
-    self.dock_editor.close()
+  def toggleEditor(self):
+    if self.dock_editor.isVisible():
+      self.dock_editor.hide()
+    else:
+      self.dock_editor.show()
 
   def addLayer(self):
     # add new mapfile layer
