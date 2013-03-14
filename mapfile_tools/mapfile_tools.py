@@ -41,7 +41,8 @@ class MapfileTools:
     self.mapfiletools_plugin_dir = self.user_plugin_dir + "/mapfile_tools"
     self.template_dir = self.mapfiletools_plugin_dir + "/templates"
 
-    self.dock_window = None
+    self.map_message_dock = None
+    self.dock_editor = None
 
   def initGui(self):
     # Create action that will start plugin configuration
@@ -55,9 +56,15 @@ class MapfileTools:
 
     # Register plugin layer type
     QgsPluginLayerRegistry.instance().addPluginLayerType(MapfilePluginLayerType(self))
-    # create dock
-    self.dock_editor = DockEditor(self)
+    # create docks
+    if not self.dock_editor:
+      self.dock_editor = DockEditor(self)
+    if not self.map_message_dock:
+      self.map_message_dock = MessageWindow(self)
+
+    self.iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.map_message_dock)
     self.iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.dock_editor)
+    self.iface.mainWindow().tabifyDockWidget(self.map_message_dock, self.dock_editor)
  
   def unload(self):
     # Remove the plugin menu item and icon
@@ -68,11 +75,7 @@ class MapfileTools:
     QgsPluginLayerRegistry.instance().removePluginLayerType(MapfileLayer.LAYER_TYPE)
 
   def messageTextEdit(self):
-    if not self.dock_window:
-        self.dock_window = MessageWindow(self)
-        self.iface.mainWindow().addDockWidget( Qt.RightDockWidgetArea,
-                                                self.dock_window )
-    return self.dock_window.textEdit
+    return self.map_message_dock.textEdit
 
   def toggleEditor(self):
     if self.dock_editor.isVisible():
