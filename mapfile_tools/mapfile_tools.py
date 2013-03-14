@@ -70,7 +70,7 @@ class MapfileTools:
   def messageTextEdit(self):
     if not self.dock_window:
         self.dock_window = MessageWindow(self)
-        self.iface.mainWindow().addDockWidget( Qt.BottomDockWidgetArea,
+        self.iface.mainWindow().addDockWidget( Qt.RightDockWidgetArea,
                                                 self.dock_window )
     return self.dock_window.textEdit
 
@@ -80,16 +80,15 @@ class MapfileTools:
     else:
       self.dock_editor.show()
 
-  def addLayer(self):
+  def addLayer(self, mapfile):
     # add new mapfile layer
-    mapfileLayer = MapfileLayer(self.messageTextEdit())
-    if mapfileLayer.openMapfile(): #mapfileLayer.showProperties():
-      QgsMapLayerRegistry.instance().addMapLayer(mapfileLayer)
+    mapfileLayer = MapfileLayer(self.messageTextEdit(), mapfile)
+    QgsMapLayerRegistry.instance().addMapLayer(mapfileLayer)
 
-      # use mapfile extents for initial view if this is the only layer
-      if self.iface.mapCanvas().layerCount() == 1:
-        extents = mapfileLayer.maprenderer.getExtents()
-        self.iface.mapCanvas().setExtent(QgsRectangle(extents[0], extents[1], extents[2], extents[3]))
-        self.iface.mapCanvas().refresh()
+    # use mapfile extents for initial view if this is the only layer
+    if self.iface.mapCanvas().layerCount() == 1:
+      extents = mapfileLayer.maprenderer.getExtents()
+      self.iface.mapCanvas().setExtent(QgsRectangle(extents[0], extents[1], extents[2], extents[3]))
+      self.iface.mapCanvas().refresh()
 
 # vim: set filetype=python expandtab tabstop=2 shiftwidth=2 autoindent smartindent:
