@@ -36,6 +36,11 @@ class MapfileTools:
   def __init__(self, iface):
     # Save reference to the QGIS interface
     self.iface = iface
+    # get paths
+    self.user_plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
+    self.mapfiletools_plugin_dir = self.user_plugin_dir + "/mapfile_tools"
+    self.template_dir = self.mapfiletools_plugin_dir + "/templates"
+
     self.dock_window = None
 
   def initGui(self):
