@@ -44,6 +44,8 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         # when a layer is added or removed in the layer tree, update combo box
         QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layersAdded(QList<QgsMapLayer *>)"), self.update_ms_layer_list)
         QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layersWillBeRemoved(QStringList)"), self.ms_layer_list_remove)
+        # when the combobox is changed, then switch editor
+        QObject.connect(self.msLayerList, SIGNAL("currentIndexChanged(int)"), self.edit_chosen_layer)
 
     def create_new_pressed(self):
         """Create new Mapfile from default template."""
@@ -103,4 +105,25 @@ class DockEditor(QDockWidget, Ui_DockEditor):
             self.editor.setText('')
         for layer_id in layer_list:
             self.msLayerList.removeItem(self.msLayerList.findData(layer_id))
+
+    def edit_chosen_layer(self, idx):
+        """Edit the layer found in combobox."""
+        self.edit_layer(self.msLayerList.itemData(idx).toString())
+
+    def edit_layer(self, layerid):
+        """Edit mapfile for given layer id"""
+        layer = QgsMapLayerRegistry.instance().mapLayer(str(layerid))
+        if isinstance(layer, MapfileLayer):
+            # save current file
+            self.update_file()
+            # make sure the combobox is set to the given layer id
+            self.msLayerList.setCurrentIndex(self.msLayerList.findData(layerid))
+            # FIXME : we should check if file has been modified since last saved  to user file ?
+            # switch editor content to corresponding mapfile
+            if layer.mapfile:
+                self.editor.load(layer.mapfile)
+            else:
+                self.editor.setText("Mapfile not found.")
+            self.temp_mapfile = layer.mapfile
+
 
