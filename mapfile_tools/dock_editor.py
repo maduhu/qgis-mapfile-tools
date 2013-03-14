@@ -68,7 +68,12 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def replace_layer_pressed(self):
         """Replace selected layer with current mapfile."""
-        pass
+        self.update_file()
+        # get layer object for currently selected layer in combobox
+        layerid = self.msLayerList.itemData(self.msLayerList.currentIndex()).toString()
+        self.msLayerList.setItemText(self.msLayerList.currentIndex(), self.msLayerList.currentText())
+        layer = QgsMapLayerRegistry.instance().mapLayer(layerid)
+        layer.loadMapfile(self.temp_mapfile, name = self.msLayerList.currentText())
 
     def get_new_layer_name(self):
         """Get current text in combobox for new layer name."""
