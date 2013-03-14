@@ -10,6 +10,7 @@ import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.Qsci import QsciScintilla
+from maplexer import MapLexer
 
 
 class SimpleMapEditor(QsciScintilla):
@@ -59,6 +60,12 @@ class SimpleMapEditor(QsciScintilla):
 
         # not too small
         self.setMinimumSize(300, 300)
+
+	# Add MapFile Custom Lexer
+        self.lexer = MapLexer(self)
+        self.setLexer(self.lexer)
+
+ 
 
     def load(self, filename):
         """Load file into editor."""
