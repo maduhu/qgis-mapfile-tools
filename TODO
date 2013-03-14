@@ -1,0 +1,20 @@
+== Core features
+* Open Mapfile template
+* Add Mapfile to Map
+* Replace current Mapfile Layer
+* Insert code snippets
+
+== text editing
+* Syntax coloring
+* undo/redo support
+* link to documentation
+* bloc management
+* comment / uncomment
+* matching "end"
+* Errors position and lines
+* highlight deprecated
+
+== Bugfixes
+* Scale problem with on the fly reprojection
+* Bug with "image" parameter
+
