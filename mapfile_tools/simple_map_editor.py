@@ -60,6 +60,14 @@ class SimpleMapEditor(QsciScintilla):
         # not too small
         self.setMinimumSize(300, 300)
 
+    def load(self, filename):
+        """Load file into editor."""
+        with open(filename) as f:
+            self.setText(f.read())
+
+    def getText(self):
+        return self.text()
+
     def on_margin_clicked(self, nmargin, nline, modifiers):
         # Toggle marker for the line the margin was clicked on
         if self.markersAtLine(nline) != 0:
