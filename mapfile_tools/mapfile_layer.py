@@ -35,15 +35,18 @@ class MapfileLayer(QgsPluginLayer):
 
   LAYER_TYPE="mapfile"
 
-  def __init__(self, messageTextEdit):
+  def __init__(self, messageTextEdit, mapfile = ""):
     QgsPluginLayer.__init__(self, MapfileLayer.LAYER_TYPE, "Mapfile Tools plugin layer")
     self.setValid(True)
 
     self.messageTextEdit = messageTextEdit
-    self.mapfile = ""
+    self.mapfile = mapfile 
     self.layers = ""
     self.maprenderer = None
     self.pixmap = None
+
+    if self.mapfile:
+      self.loadMapfile(mapfile, ())
 
   def setupPaintArea(self, rendererContext):
     rasterScaleFactor = rendererContext.rasterScaleFactor()
