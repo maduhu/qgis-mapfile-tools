@@ -14,7 +14,12 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         self.parent = parent
         self.setupUi(self)
         self.editor = SimpleMapEditor(self)
-        self.gridLayout.addWidget(self.editor, 0, 0, 7, 1)
+        # get position of "widget" widget to replace it
+        # so as not to change the code on every qt designer modification
+        row, col, rowspan, colspan = self.gridLayout.getItemPosition(
+                self.gridLayout.indexOf(self.widget))
+        # add the scintilla editor on top of "widget" widget
+        self.gridLayout.addWidget(self.editor, row, col, rowspan, colspan)
     
     def closeEvent(self, event):
         self.parent.dock_window = None
