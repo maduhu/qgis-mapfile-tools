@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>607</width>
+    <width>703</width>
     <height>288</height>
    </rect>
   </property>
@@ -15,10 +15,10 @@
   </property>
   <widget class="QWidget" name="DockEditorContent">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0" rowspan="8" colspan="5">
+    <item row="1" column="0" rowspan="8" colspan="6">
      <widget class="QWidget" name="widget" native="true"/>
     </item>
-    <item row="2" column="5" colspan="2">
+    <item row="2" column="6" colspan="2">
      <widget class="QDialogButtonBox" name="fileBox">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -28,42 +28,42 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="5">
+    <item row="3" column="6">
      <widget class="Line" name="line_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="4" column="5">
+    <item row="4" column="6">
      <widget class="QLabel" name="label">
       <property name="text">
        <string>Templates</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="5">
+    <item row="5" column="6">
      <widget class="QPushButton" name="template1">
       <property name="text">
        <string>Vector Layer</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="5">
+    <item row="6" column="6">
      <widget class="QPushButton" name="template2">
       <property name="text">
        <string>PostGIS Layer</string>
       </property>
      </widget>
     </item>
-    <item row="7" column="5">
+    <item row="7" column="6">
      <widget class="QPushButton" name="template3">
       <property name="text">
        <string>Raster Layer</string>
       </property>
      </widget>
     </item>
-    <item row="8" column="5">
+    <item row="8" column="6">
      <widget class="QPushButton" name="template4">
       <property name="text">
        <string>Classify</string>
@@ -87,7 +87,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="4">
+    <item row="0" column="5">
      <widget class="QPushButton" name="addLayerButton">
       <property name="text">
        <string>Add Layer</string>
@@ -105,6 +105,13 @@
      <widget class="QPushButton" name="replaceLayerButton">
       <property name="text">
        <string>Replace Layer</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <widget class="QCheckBox" name="autorefresh">
+      <property name="text">
+       <string>autorefresh</string>
       </property>
      </widget>
     </item>
