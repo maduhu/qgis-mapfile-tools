@@ -75,7 +75,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         if not layer_name:
             i = 1
             layer_name = template % i
-            while self.msLayerList.find(layer_name) == -1 :
+            while self.msLayerList.findText(layer_name) <> -1 :
                 i = i + 1
                 layer_name = template % i
         return layer_name
