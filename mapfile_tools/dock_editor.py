@@ -2,6 +2,7 @@
 
 import os
 import sys
+import re
 from tempfile import mkstemp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -35,6 +36,8 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
         # connect signals and slots
         self.connectAll()
+        self.update_autorefresh()
+        self.display_mapfile_validity()
 
     def connectAll(self):
         """Do all initial connections of Gui elements."""
@@ -46,6 +49,55 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layersWillBeRemoved(QStringList)"), self.ms_layer_list_remove)
         # when the combobox is changed, then switch editor
         QObject.connect(self.msLayerList, SIGNAL("currentIndexChanged(int)"), self.edit_chosen_layer)
+        QObject.connect(self.autorefresh, SIGNAL("toggled(bool)"), self.update_autorefresh)
+        QObject.connect(self.editor, SIGNAL("textChanged()"), self.display_mapfile_validity)
+
+    def display_mapfile_validity(self):
+        """Display on GUI the validity of current mapfile."""
+        layerid = self.msLayerList.itemData(self.msLayerList.currentIndex()).toString()
+        layer = QgsMapLayerRegistry.instance().mapLayer(layerid)
+        if layer is not None:
+            self.update_file()
+            message = layer.maprenderer.load_mapfile(self.temp_mapfile)
+            layer.messageTextEdit.append(message)
+            mapobj = layer.maprenderer.getMapObj()
+            if mapobj is None:
+                self.addLayerButton.setEnabled(False)
+                self.replaceLayerButton.setEnabled(False)
+            else:
+                self.addLayerButton.setEnabled(True)
+                self.replaceLayerButton.setEnabled(True)
+                self.editor.markerDeleteAll()
+            # display error line
+            regexp = re.compile('.*\(line ([0-9]*)\)')
+            try:
+                # get error line number
+                linenb = int(regexp.findall(message.split("\n")[-1])[-1])
+                # add a marker on error line in editor
+                # FIXME : move this code into editor's mark_error()
+                self.editor.markerAdd(linenb - 1, self.editor.ARROW_MARKER_NUM)
+            except ValueError:
+                # error not understood, just ignore
+                pass
+            except IndexError:
+                pass
+
+    def update_autorefresh(self):
+        """Connect or disconnect autorefresh according to combobox state."""
+        if self.autorefresh.isChecked():
+            QObject.disconnect(self.editor, SIGNAL("textChanged()"), self.display_mapfile_validity)
+            QObject.connect(self.editor, SIGNAL("textChanged()"), self.refresh_layer)
+        else:
+            QObject.disconnect(self.editor, SIGNAL("textChanged()"), self.refresh_layer)
+            QObject.connect(self.editor, SIGNAL("textChanged()"), self.display_mapfile_validity)
+
+    def refresh_layer(self):
+        """Refresh layer for auto-refresh, if mapfile is valid."""
+        # indicate that mapfile is valid
+        self.display_mapfile_validity()
+        # same as if we pressed refresh layer button
+        if self.replaceLayerButton.isEnabled():
+            self.replace_layer_pressed()
 
     def create_new_pressed(self):
         """Create new Mapfile from default template."""
