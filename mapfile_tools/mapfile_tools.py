@@ -83,9 +83,9 @@ class MapfileTools:
     else:
       self.dock_editor.show()
 
-  def addLayer(self, mapfile):
+  def addLayer(self, mapfile, name=None):
     # add new mapfile layer
-    mapfileLayer = MapfileLayer(self.messageTextEdit(), mapfile)
+    mapfileLayer = MapfileLayer(self.messageTextEdit(), mapfile, name)
     QgsMapLayerRegistry.instance().addMapLayer(mapfileLayer)
 
     # use mapfile extents for initial view if this is the only layer
@@ -97,6 +97,6 @@ class MapfileTools:
   def updateLayer(self, layerid, mapfile):
     """Update QGIS layer to new mapfile."""
     layer = QgsMapLayerRegistry.instance().mapLayer(layerid)
-    layer.loadMapfile(mapfile, ())
+    layer.loadMapfile(mapfile)
 
 # vim: set filetype=python expandtab tabstop=2 shiftwidth=2 autoindent smartindent:
