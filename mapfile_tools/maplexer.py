@@ -100,12 +100,3 @@ class MapLexer(Qsci.QsciLexerCustom):
                       index += 1
 
                  set_style(length, state)
-
-
-if __name__ == "__main__":
-      app = QtGui.QApplication(sys.argv)
-      app.connect(app, QtCore.SIGNAL('lastWindowClosed()'),
-                      QtCore.SLOT('quit()'))
-      win = MainWindow()
-      win.show()
-      sys.exit(app.exec_())
