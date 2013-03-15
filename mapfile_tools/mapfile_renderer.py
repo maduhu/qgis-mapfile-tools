@@ -50,7 +50,7 @@ class MapfileRenderer():
       message += str(err) 
     except mapscript.MapServerChildError as err:
       message += str(err) 
-    except mapscript.EOFError as err:
+    except EOFError as err:
       message += str(err) 
     return message
 
