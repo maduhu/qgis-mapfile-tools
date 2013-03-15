@@ -58,9 +58,14 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def open_file(self):
         """Open a new Mapfile selected by user."""
+        self.msLayerList.clearEditText()
         filename = QFileDialog.getOpenFileName(self,
                 "Open Mapfile", "~", "Mapserver Mapfile (*.map)")
         self.editor.load(filename)
+        # create temporary file
+        fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
+        # write mapfile content to the temp file
+        self.update_file()
 
     def export_file(self):
         """Export the current Mapfile to file selected by user."""
