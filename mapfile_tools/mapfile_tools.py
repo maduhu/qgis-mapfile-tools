@@ -57,10 +57,10 @@ class MapfileTools:
     # Register plugin layer type
     QgsPluginLayerRegistry.instance().addPluginLayerType(MapfilePluginLayerType(self))
     # create docks
-    if not self.dock_editor:
-      self.dock_editor = DockEditor(self)
     if not self.map_message_dock:
       self.map_message_dock = MessageWindow(self)
+    if not self.dock_editor:
+      self.dock_editor = DockEditor(self, self.messageTextEdit())
 
     self.iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.map_message_dock)
     self.iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, self.dock_editor)

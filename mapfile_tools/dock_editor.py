@@ -11,13 +11,17 @@ from qgis.core import QgsMapLayerRegistry
 from mapfile_layer import MapfileLayer
 from ui_dock_editor import Ui_DockEditor
 from simple_map_editor import SimpleMapEditor
+from mapfile_renderer import MapfileRenderer
 
 class DockEditor(QDockWidget, Ui_DockEditor):
-    def __init__(self, parent):
+    def __init__(self, parent, messageTextEdit = None):
         QDockWidget.__init__(self, parent.iface.mainWindow())
         # temporary file for mapfile
         # FIXME : should deal with multiple mapfiles
         self.temp_mapfile = None
+
+        # where to log messages
+        self.messageTextEdit = messageTextEdit
 
         # Set up the user interface from Designer. 
         self.parent = parent
@@ -31,6 +35,9 @@ class DockEditor(QDockWidget, Ui_DockEditor):
                 self.gridLayout.indexOf(self.widget))
         # add the scintilla editor on top of "widget" widget
         self.gridLayout.addWidget(self.editor, row, col, rowspan, colspan)
+        # initially, nothing loaded, deactivate add and refresh buttons
+        self.replaceLayerButton.setEnabled(False)
+        self.addLayerButton.setEnabled(False)
 
         # fill in the combobox
         self.update_ms_layer_list()
@@ -42,9 +49,10 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def connectAll(self):
         """Do all initial connections of Gui elements."""
-        QObject.connect(self.createNewButton, SIGNAL("clicked()"), self.create_new_pressed)
         QObject.connect(self.replaceLayerButton, SIGNAL("clicked()"), self.replace_layer_pressed)
         QObject.connect(self.addLayerButton, SIGNAL("clicked()"), self.add_layer_pressed)
+        # templates
+        QObject.connect(self.createNewButton, SIGNAL("clicked()"), self.create_new_pressed)
         # when a layer is added or removed in the layer tree, update combo box
         QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layersAdded(QList<QgsMapLayer *>)"), self.update_ms_layer_list)
         QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layersWillBeRemoved(QStringList)"), self.ms_layer_list_remove)
@@ -66,6 +74,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
         # write mapfile content to the temp file
         self.update_file()
+        self.display_mapfile_validity()
 
     def export_file(self):
         """Export the current Mapfile to file selected by user."""
@@ -76,13 +85,13 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def display_mapfile_validity(self):
         """Display on GUI the validity of current mapfile."""
-        layerid = self.msLayerList.itemData(self.msLayerList.currentIndex()).toString()
-        layer = QgsMapLayerRegistry.instance().mapLayer(layerid)
-        if layer is not None:
+        if self.editor.getText() <> '' and self.temp_mapfile and os.path.exists(self.temp_mapfile):
             self.update_file()
-            message = layer.maprenderer.load_mapfile(self.temp_mapfile)
-            layer.messageTextEdit.append(message)
-            mapobj = layer.maprenderer.getMapObj()
+            renderer = MapfileRenderer(self.temp_mapfile)
+            message = renderer.load_mapfile()
+            if self.messageTextEdit:
+                self.messageTextEdit.append(message)
+            mapobj = renderer.getMapObj()
             if mapobj is None:
                 self.addLayerButton.setEnabled(False)
                 self.replaceLayerButton.setEnabled(False)
@@ -99,7 +108,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
                 # FIXME : move this code into editor's mark_error()
                 self.editor.markerAdd(linenb - 1, self.editor.ARROW_MARKER_NUM)
             except ValueError:
-                # error not understood, just ignore
+                # error with no line number, just ignore
                 pass
             except IndexError:
                 pass
@@ -129,6 +138,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
         # write mapfile content to the temp file
         self.update_file()
+        self.display_mapfile_validity()
 
     def add_layer_pressed(self):
         """Add current Mapfile to layer."""
