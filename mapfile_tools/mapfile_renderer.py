@@ -48,6 +48,10 @@ class MapfileRenderer():
       self.mapObj = mapscript.mapObj(self.mapfile)
     except mapscript.MapServerError as err:
       message += str(err) 
+    except mapscript.MapServerChildError as err:
+      message += str(err) 
+    except mapscript.EOFError as err:
+      message += str(err) 
     return message
 
   # extent: QExtent
