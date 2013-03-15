@@ -3,6 +3,7 @@
 import os
 import sys
 import re
+from shutil import copyfile
 from tempfile import mkstemp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -51,6 +52,22 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         QObject.connect(self.msLayerList, SIGNAL("currentIndexChanged(int)"), self.edit_chosen_layer)
         QObject.connect(self.autorefresh, SIGNAL("toggled(bool)"), self.update_autorefresh)
         QObject.connect(self.editor, SIGNAL("textChanged()"), self.display_mapfile_validity)
+        # connect the open and save buttons
+        QObject.connect(self.openButton, SIGNAL("clicked()"), self.open_file)
+        QObject.connect(self.exportButton, SIGNAL("clicked()"), self.export_file)
+
+    def open_file(self):
+        """Open a new Mapfile selected by user."""
+        filename = QFileDialog.getOpenFileName(self,
+                "Open Mapfile", "~", "Mapserver Mapfile (*.map)")
+        self.editor.load(filename)
+
+    def export_file(self):
+        """Export the current Mapfile to file selected by user."""
+        filename = QFileDialog.getSaveFileName(self, "Export Mapfile", "~",
+                "Mapserver Mapfile (*.map)")
+        self.update_file()
+        copyfile(self.temp_mapfile, filename)
 
     def display_mapfile_validity(self):
         """Display on GUI the validity of current mapfile."""

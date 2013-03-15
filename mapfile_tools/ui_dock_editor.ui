@@ -15,62 +15,52 @@
   </property>
   <widget class="QWidget" name="DockEditorContent">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0" rowspan="8" colspan="6">
+    <item row="1" column="0" rowspan="10" colspan="6">
      <widget class="QWidget" name="widget" native="true"/>
     </item>
-    <item row="2" column="6" colspan="2">
-     <widget class="QDialogButtonBox" name="fileBox">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="6">
+    <item row="3" column="7">
      <widget class="Line" name="line_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="4" column="6">
+    <item row="5" column="7">
      <widget class="QLabel" name="label">
       <property name="text">
        <string>Templates</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="6">
+    <item row="7" column="7">
      <widget class="QPushButton" name="template1">
       <property name="text">
        <string>Vector Layer</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="6">
+    <item row="8" column="7">
      <widget class="QPushButton" name="template2">
       <property name="text">
        <string>PostGIS Layer</string>
       </property>
      </widget>
     </item>
-    <item row="7" column="6">
+    <item row="9" column="7">
      <widget class="QPushButton" name="template3">
       <property name="text">
        <string>Raster Layer</string>
       </property>
      </widget>
     </item>
-    <item row="8" column="6">
+    <item row="10" column="7">
      <widget class="QPushButton" name="template4">
       <property name="text">
        <string>Classify</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item row="0" column="1" colspan="2">
      <widget class="QComboBox" name="msLayerList">
       <property name="editable">
        <bool>true</bool>
@@ -87,28 +77,42 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="5">
-     <widget class="QPushButton" name="addLayerButton">
+    <item row="1" column="7">
+     <widget class="QPushButton" name="exportButton">
       <property name="text">
-       <string>Add Layer</string>
+       <string>Export...</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
+    <item row="2" column="7">
+     <widget class="QPushButton" name="openButton">
+      <property name="text">
+       <string>Open...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="7">
      <widget class="QPushButton" name="createNewButton">
       <property name="text">
-       <string>Create New</string>
+       <string>Full template</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QPushButton" name="replaceLayerButton">
+      <property name="text">
+       <string>Refresh</string>
       </property>
      </widget>
     </item>
     <item row="0" column="3">
-     <widget class="QPushButton" name="replaceLayerButton">
+     <widget class="QPushButton" name="addLayerButton">
       <property name="text">
-       <string>Replace Layer</string>
+       <string>Add New</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="6">
+    <item row="0" column="5">
      <widget class="QCheckBox" name="autorefresh">
       <property name="text">
        <string>autorefresh</string>
