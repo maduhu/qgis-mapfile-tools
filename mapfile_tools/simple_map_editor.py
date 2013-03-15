@@ -62,6 +62,8 @@ class SimpleMapEditor(QsciScintilla):
         self.lexer = MapLexer(self)
         self.setLexer(self.lexer)
 
+        QObject.connect(self, SIGNAL("textChanged()"), self.lexer.refreshProperties)
+
     def load(self, filename):
         """Load file into editor."""
         with open(filename) as f:
