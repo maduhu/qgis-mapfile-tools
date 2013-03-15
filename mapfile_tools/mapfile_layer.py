@@ -35,7 +35,7 @@ class MapfileLayer(QgsPluginLayer):
 
   LAYER_TYPE="mapfile"
 
-  def __init__(self, messageTextEdit, mapfile = ""):
+  def __init__(self, messageTextEdit, mapfile = "", name = None):
     QgsPluginLayer.__init__(self, MapfileLayer.LAYER_TYPE, "Mapfile Tools plugin layer")
     self.setValid(True)
 
@@ -46,7 +46,7 @@ class MapfileLayer(QgsPluginLayer):
     self.pixmap = None
 
     if self.mapfile:
-      self.loadMapfile(mapfile, ())
+      self.loadMapfile(mapfile, (), name)
 
   def setupPaintArea(self, rendererContext):
     rasterScaleFactor = rendererContext.rasterScaleFactor()
@@ -68,7 +68,8 @@ class MapfileLayer(QgsPluginLayer):
     return QgsRectangle(topleft, bottomright)
 
   def drawUntiled(self, painter, extent, viewport):
-    img = self.maprenderer.render(extent, (viewport.width(), viewport.height()))
+    img, message = self.maprenderer.render(extent, (viewport.width(), viewport.height()))
+    self.messageTextEdit.append(message)
     self.pixmap.loadFromData(img)
     painter.drawPixmap(viewport.xMinimum(), viewport.yMinimum(), self.pixmap)
 
@@ -102,7 +103,8 @@ class MapfileLayer(QgsPluginLayer):
         bbox = "%f,%f,%f,%f" % (mapBottomLeft.x(), mapBottomLeft.y(), mapTopRight.x(), mapTopRight.y())
 
         # render and compose image
-        img = self.maprenderer.render(bbox, (width, height))
+        img, message = self.maprenderer.render(bbox, (width, height))
+        self.messageTextEdit.append(message)
         self.pixmap.loadFromData(img)
         painter.drawPixmap(viewport.xMinimum() + left, viewport.yMinimum() + top, self.pixmap)
 
@@ -146,18 +148,25 @@ class MapfileLayer(QgsPluginLayer):
     element.setAttribute("layers", str(self.layers))
     return True
 
-  def loadMapfile(self, mapfile, layers):
+  def loadMapfile(self, mapfile, layers = (), name = None):
+    message = ''
     self.mapfile = mapfile
     self.layers = layers
     if self.mapfile == "":
       return False
 
     # open mapfile
-    self.maprenderer = MapfileRenderer(str(self.mapfile), self.messageTextEdit)
-    if self.maprenderer.getMapObj() == None:
+    self.maprenderer = MapfileRenderer(str(self.mapfile))
+    message = self.maprenderer.load_mapfile()
+    self.messageTextEdit.append(message)
+    mapobj = self.maprenderer.getMapObj()
+    if mapobj is None:
       return False
 
-    self.setLayerName(self.maprenderer.getMapObj().name)
+    if name is None:
+        self.setLayerName(mapobj.name)
+    else:
+        self.setLayerName(name)
 
     # get projection as EPSG
     crs = QgsCoordinateReferenceSystem()

@@ -1,17 +1,20 @@
 == Core features
 X Open Mapfile template
 X Add Mapfile to Map
-* deal with multiple layers
+X deal with multiple layers
 X Fill combobox with existing MS layers
-* Replace current Mapfile Layer
+X Replace current Mapfile Layer
+X auto-refresh layer
+* layer property window
+* select layers to display in layer property window
 * Insert code snippets
 * right-click on layer -> edit
 
 == text editing
-* Syntax coloring
-* undo/redo support
+X Syntax coloring
+X undo/redo support
 * link to documentation
-* bloc management
+* block management
 * comment / uncomment
 * matching "end"
 * Errors position and lines

@@ -22,14 +22,13 @@ import mapscript
 
 class MapfileRenderer():
 
-  def __init__ (self, mapfile, messageTextEdit):
+  def __init__ (self, mapfile):
     self.mapfile = mapfile
-    self.messageTextEdit = messageTextEdit
     self.styles = ""
     self.layers = ""
     self.srs = "EPSG:4326"
     self.mime_type = "image/png"
-    self.messageTextEdit.append( "Opening " + self.mapfile )
+    self.mapObj = None
 
   def setup(self, layers, srs = "EPSG:4326", mime_type = "image/png"):
     self.layers = layers
@@ -37,16 +36,28 @@ class MapfileRenderer():
     self.mime_type = mime_type
 
   def getMapObj(self):
-    mapObj = None
+    return self.mapObj
+
+  def load_mapfile(self, mapfile = None):
+    if mapfile is not None:
+      self.mapfile = mapfile
+    message = ""
+    self.mapObj = None
     try:
-      mapObj = mapscript.mapObj(self.mapfile)
+      message += "Opening %s" % self.mapfile
+      self.mapObj = mapscript.mapObj(self.mapfile)
     except mapscript.MapServerError as err:
-      self.messageTextEdit.append( str(err) )
-    return mapObj
+      message += str(err) 
+    except mapscript.MapServerChildError as err:
+      message += str(err) 
+    except mapscript.EOFError as err:
+      message += str(err) 
+    return message
 
   # extent: QExtent
   # size = (width,height)
   def render(self, extent, size):
+    message = ""
     mapObj = self.getMapObj()
 
     mapObj.setConfigOption("MS_ERRORFILE", "stdout")
@@ -54,22 +65,22 @@ class MapfileRenderer():
 
     mapObj.setExtent(extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum())
     mapObj.setSize(int(size[0]), int(size[1]))
-    self.messageTextEdit.append( "Rendering " + extent.toString() )
+    message += "Rendering %s" % extent.toString()
 
     data = ''
     try:
       mapscript.msIO_installStdoutToBuffer()
       mapImage = mapObj.draw() #= mapscript.imageObj(int(size[0]), int(size[1]), self.mime_type)
       data = mapImage.getBytes()
-      self.messageTextEdit.append( "Image size: " + str(len(data)) )
+      message += "Image size: %s" % str(len(data))
 
       out = mapscript.msIO_getStdoutBufferString()
       mapscript.msIO_resetHandlers()
-      self.messageTextEdit.append( out )
+      message += out
     except mapscript.MapServerError as err:
-      self.messageTextEdit.append( str(err) )
+      message += str(err)
 
-    return data
+    return data, message
 
   def getExtents(self):
     mapObj = self.getMapObj()
@@ -88,3 +99,5 @@ class MapfileRenderer():
 
   def getMaxSize(self):
     return self.getMapObj().maxsize
+
+# vim: set filetype=python expandtab tabstop=2 shiftwidth=2 autoindent smartindent:
