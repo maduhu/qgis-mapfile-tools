@@ -89,7 +89,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
             self.update_file()
             renderer = MapfileRenderer(self.temp_mapfile)
             message = renderer.load_mapfile()
-            if self.messageTextEdit:
+            if self.messageTextEdit is not None:
                 self.messageTextEdit.append(message)
             mapobj = renderer.getMapObj()
             if mapobj is None:
