@@ -143,12 +143,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
     def add_layer_pressed(self):
         """Add current Mapfile to layer."""
         self.update_file()
-        name = ""
-        if self.msLayerList.currentText == '':
-            name = self.get_new_layer_name()
-        else:
-            name = self.msLayerList.currentText()
-        self.parent.addLayer(self.temp_mapfile, name = name)
+        self.parent.addLayer(self.temp_mapfile)
 
     def replace_layer_pressed(self):
         """Replace selected layer with current mapfile."""
@@ -157,19 +152,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         layerid = self.msLayerList.itemData(self.msLayerList.currentIndex()).toString()
         self.msLayerList.setItemText(self.msLayerList.currentIndex(), self.msLayerList.currentText())
         layer = QgsMapLayerRegistry.instance().mapLayer(layerid)
-        layer.loadMapfile(self.temp_mapfile, name = self.msLayerList.currentText())
-
-    def get_new_layer_name(self):
-        """Get current text in combobox for new layer name."""
-        template = 'New Layer %s'
-        layer_name = self.msLayerList.currentText()
-        if not layer_name:
-            i = 1
-            layer_name = template % i
-            while self.msLayerList.findText(layer_name) <> -1 :
-                i = i + 1
-                layer_name = template % i
-        return layer_name
+        layer.loadMapfile(self.temp_mapfile)
 
     def closeEvent(self, event):
         self.parent.dock_window = None
