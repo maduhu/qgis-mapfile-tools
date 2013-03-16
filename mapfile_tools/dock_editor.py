@@ -17,8 +17,8 @@ class DockEditor(QDockWidget, Ui_DockEditor):
     def __init__(self, parent, messageTextEdit = None):
         QDockWidget.__init__(self, parent.iface.mainWindow())
         # temporary file for mapfile
-        # FIXME : should deal with multiple mapfiles
-        self.temp_mapfile = None
+        # create a temporary file for current editor content
+        fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
 
         # where to log messages
         self.messageTextEdit = messageTextEdit
@@ -133,25 +133,35 @@ class DockEditor(QDockWidget, Ui_DockEditor):
     def create_new_pressed(self):
         """Create new Mapfile from default template."""
         self.editor.load(self.parent.template_dir + "/default.map")
-        # create temporary file
-        fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
         # write mapfile content to the temp file
         self.update_file()
         self.display_mapfile_validity()
 
     def add_layer_pressed(self):
         """Add current Mapfile to layer."""
+        # new layer => new temp file
+        # create temporary file
+        fd, layer_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
+        # write editor text to current file
         self.update_file()
-        self.parent.addLayer(self.temp_mapfile)
+        # write editor text to layer mapfile
+        with open(layer_mapfile, "w+") as f:
+            f.write(self.editor.getText())
+        # add layer
+        self.parent.addLayer(layer_mapfile)
 
     def replace_layer_pressed(self):
         """Replace selected layer with current mapfile."""
+        # save current editor to work file
         self.update_file()
         # get layer object for currently selected layer in combobox
         layerid = self.msLayerList.itemData(self.msLayerList.currentIndex()).toString()
         self.msLayerList.setItemText(self.msLayerList.currentIndex(), self.msLayerList.currentText())
         layer = QgsMapLayerRegistry.instance().mapLayer(layerid)
-        layer.loadMapfile(self.temp_mapfile)
+        if layer and layer.mapfile is not None and os.path.exists(layer.mapfile):
+            with open(layer.mapfile, "w+") as f:
+                f.write(self.editor.getText())
+            layer.reload()
         # update name in msLayerList
         self.msLayerList.setItemText(self.msLayerList.currentIndex(), layer.name())
 
@@ -179,6 +189,12 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         for layer_id in layer_list:
             self.msLayerList.removeItem(self.msLayerList.findData(layer_id))
 
+    def layer_mapfile_to_temp_mapfile(self, layer_mapfile):
+        """Copy layer mapfile content to temp mapfile."""
+        with open(layer_mapfile, "r") as f:
+            with open(self.temp_mapfile, "w+") as t:
+                t.write(f.read())
+
     def edit_chosen_layer(self, idx):
         """Edit the layer found in combobox."""
         self.edit_layer(self.msLayerList.itemData(idx).toString())
@@ -187,16 +203,15 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         """Edit mapfile for given layer id"""
         layer = QgsMapLayerRegistry.instance().mapLayer(str(layerid))
         if isinstance(layer, MapfileLayer):
-            # save current file
-            self.update_file()
+            # FIXME : we should check if file has been modified since last saved  to user file ?
             # make sure the combobox is set to the given layer id
             self.msLayerList.setCurrentIndex(self.msLayerList.findData(layerid))
-            # FIXME : we should check if file has been modified since last saved  to user file ?
             # switch editor content to corresponding mapfile
-            if layer.mapfile:
-                self.editor.load(layer.mapfile)
+            if layer.mapfile is not None and os.path.exists(layer.mapfile):
+                self.layer_mapfile_to_temp_mapfile(layer.mapfile)
+                self.editor.load(self.temp_mapfile)
             else:
                 self.editor.setText("Mapfile not found.")
-            self.temp_mapfile = layer.mapfile
+
 
 
