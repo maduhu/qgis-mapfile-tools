@@ -132,7 +132,6 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def create_new_pressed(self):
         """Create new Mapfile from default template."""
-        self.msLayerList.clearEditText()
         self.editor.load(self.parent.template_dir + "/default.map")
         # create temporary file
         fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
@@ -153,6 +152,8 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         self.msLayerList.setItemText(self.msLayerList.currentIndex(), self.msLayerList.currentText())
         layer = QgsMapLayerRegistry.instance().mapLayer(layerid)
         layer.loadMapfile(self.temp_mapfile)
+        # update name in msLayerList
+        self.msLayerList.setItemText(self.msLayerList.currentIndex(), layer.name())
 
     def closeEvent(self, event):
         self.parent.dock_window = None
