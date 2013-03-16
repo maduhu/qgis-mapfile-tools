@@ -72,3 +72,8 @@ class SimpleMapEditor(QsciScintilla):
     def getText(self):
         return self.text()
 
+    def insertFileAtPosition(self, filename):
+        """Insert content of given filename at current cursor position"""
+        with open(str(filename), "r") as f:
+            self.insert(f.read())
+

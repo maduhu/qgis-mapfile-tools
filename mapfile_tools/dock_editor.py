@@ -19,6 +19,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         # temporary file for mapfile
         # create a temporary file for current editor content
         fd, self.temp_mapfile = mkstemp(suffix='.map', prefix = 'mapfile_tools_', text = True)
+        self.template_dir = str(parent.template_dir)
 
         # where to log messages
         self.messageTextEdit = messageTextEdit
@@ -42,6 +43,10 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         # fill in the combobox
         self.update_ms_layer_list()
 
+        # fill in template comboboxes
+        self.update_full_templates()
+        self.update_partial_templates()
+
         # connect signals and slots
         self.connectAll()
         self.update_autorefresh()
@@ -52,7 +57,9 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         QObject.connect(self.replaceLayerButton, SIGNAL("clicked()"), self.replace_layer_pressed)
         QObject.connect(self.addLayerButton, SIGNAL("clicked()"), self.add_layer_pressed)
         # templates
-        QObject.connect(self.createNewButton, SIGNAL("clicked()"), self.create_new_pressed)
+        QObject.connect(self.loadFullDefault, SIGNAL("clicked()"), self.load_full_default_pressed)
+        QObject.connect(self.loadFullButton, SIGNAL("clicked()"), self.load_full_template_pressed)
+        QObject.connect(self.loadPartialButton, SIGNAL("clicked()"), self.load_partial_template_pressed)
         # when a layer is added or removed in the layer tree, update combo box
         QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layersAdded(QList<QgsMapLayer *>)"), self.update_ms_layer_list)
         QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layersWillBeRemoved(QStringList)"), self.ms_layer_list_remove)
@@ -63,6 +70,24 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         # connect the open and save buttons
         QObject.connect(self.openButton, SIGNAL("clicked()"), self.open_file)
         QObject.connect(self.exportButton, SIGNAL("clicked()"), self.export_file)
+
+    def update_full_templates(self):
+        """Update full template combobox with file list."""
+        regexp = re.compile("full_.*\.map")
+        for filename in os.listdir(self.template_dir):
+            if regexp.match(os.path.basename(filename)) is not None:
+                self.fullTemplatesList.addItem(os.path.basename(filename)[5:-4], filename)
+        if self.fullTemplatesList.count() == 0:
+            self.loadFullButton.setEnabled(False)
+        
+    def update_partial_templates(self):
+        """Update partial templates combobox with file list."""
+        regexp = re.compile("partial_.*\.map")
+        for filename in os.listdir(self.template_dir):
+            if regexp.match(os.path.basename(filename)) is not None:
+                self.partialTemplatesList.addItem(os.path.basename(filename)[8:-4], filename)
+        if self.partialTemplatesList.count() == 0:
+            self.loadPartialButton.setEnabled(False)
 
     def open_file(self):
         """Open a new Mapfile selected by user."""
@@ -130,9 +155,28 @@ class DockEditor(QDockWidget, Ui_DockEditor):
         if self.replaceLayerButton.isEnabled():
             self.replace_layer_pressed()
 
-    def create_new_pressed(self):
+    def load_full_default_pressed(self):
         """Create new Mapfile from default template."""
-        self.editor.load(self.parent.template_dir + "/default.map")
+        self.load_template("default.map", replace = True)
+
+    def load_partial_template_pressed(self):
+        """Insert currently selected template into editor."""
+        idx = self.partialTemplatesList.currentIndex()
+        if idx <> -1:
+            self.load_template(str(self.partialTemplatesList.itemData(idx).toString()))
+
+    def load_full_template_pressed(self):
+        """Load currently selected template into editor."""
+        idx = self.partialTemplatesList.currentIndex()
+        if idx <> -1:
+            self.load_template(str(self.fullTemplatesList.itemData(idx).toString()), replace = True)
+
+    def load_template(self, template_name, replace = False):
+        """Insert a template into the editor."""
+        if replace:
+            self.editor.load(os.path.join(self.template_dir, str(template_name)))
+        else:
+            self.editor.insertFileAtPosition(os.path.join(self.template_dir, str(template_name)))
         # write mapfile content to the temp file
         self.update_file()
         self.display_mapfile_validity()

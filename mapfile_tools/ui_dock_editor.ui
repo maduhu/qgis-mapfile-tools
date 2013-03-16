@@ -54,7 +54,7 @@
      <widget class="QWidget" name="widget" native="true"/>
     </item>
     <item row="6" column="5" colspan="2">
-     <widget class="QPushButton" name="createNewButton">
+     <widget class="QPushButton" name="loadFullDefault">
       <property name="text">
        <string>Default Mapfile</string>
       </property>
@@ -72,6 +72,9 @@
     </item>
     <item row="11" column="5" colspan="2">
      <widget class="QPushButton" name="template1">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>Vector Layer</string>
       </property>
@@ -79,6 +82,9 @@
     </item>
     <item row="12" column="5" colspan="2">
      <widget class="QPushButton" name="template2">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>PostGIS Layer</string>
       </property>
@@ -86,6 +92,9 @@
     </item>
     <item row="13" column="5" colspan="2">
      <widget class="QPushButton" name="template3">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>Raster Layer</string>
       </property>
