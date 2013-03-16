@@ -148,6 +148,9 @@ class MapfileLayer(QgsPluginLayer):
     element.setAttribute("layers", str(self.layers))
     return True
 
+  def reload(self, layers = (), name = None):
+    self.loadMapfile(self.mapfile, layers, name)
+
   def loadMapfile(self, mapfile, layers = (), name = None):
     message = ''
     self.mapfile = mapfile
