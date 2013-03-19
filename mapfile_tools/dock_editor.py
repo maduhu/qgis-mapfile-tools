@@ -167,7 +167,7 @@ class DockEditor(QDockWidget, Ui_DockEditor):
 
     def load_full_template_pressed(self):
         """Load currently selected template into editor."""
-        idx = self.partialTemplatesList.currentIndex()
+        idx = self.fullTemplatesList.currentIndex()
         if idx <> -1:
             self.load_template(str(self.fullTemplatesList.itemData(idx).toString()), replace = True)
 
